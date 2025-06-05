@@ -80,7 +80,7 @@
             *   For categorical features (dropdowns): ensure a selection is made.
         *   Load the saved model and preprocessing pipeline.
         *   Preprocess input data consistently with the training pipeline.
-        *   Display the predicted `Water Quality Classification` (e.g., "Excellent", "Good", "Poor", "Unsuitable for Drinking") clearly.
+        *   Display the predicted `Water Quality Classification` (e.g., "Excellent", "Good", "Poor", "Very Poor yet Drinkable", "Unsuitable for Drinking") clearly.
 
 ---
 
