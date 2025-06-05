@@ -113,17 +113,17 @@
 
 ```mermaid
 graph TD
-    A[Phase 1: Foundation & Data Acquisition] --> B(1. Project Setup & Env Config);
-    A --> C(2. Data Acq. from dataset/water_quality.csv & EDA - Focus on Multi-class Target, WQI relationship, Categorical/Numerical Features);
+    A[Phase 1: Foundation & Data Acquisition] --> B(Project Setup & Env Config);
+    A --> C(Data Acq. from dataset/water_quality.csv & EDA - Focus on Multi-class Target, WQI relationship, Categorical/Numerical Features);
     C --> D[Phase 2: Data Preparation & Modeling];
-    D --> E(3. Data Preprocessing - Feature Selection incl. WQI EXCLUSION, Encoding Categorical, Scaling);
-    E --> F(4. Model Selection for Multi-class, Training, Baseline Eval & Feature Importance);
+    D --> E(Data Preprocessing - Feature Selection incl. WQI EXCLUSION, Encoding Categorical, Scaling);
+    E --> F(Model Selection for Multi-class, Training, Baseline Eval & Feature Importance);
     F --> G[Phase 3: Optimization & Prototyping];
-    G --> H(5. Hyperparameter Tuning for Multi-class Models);
-    H --> I(6. Prototype Development - UI with Input Validation, Multi-class Output);
+    G --> H(Hyperparameter Tuning for Multi-class Models);
+    H --> I(Prototype Development - UI with Input Validation, Multi-class Output);
     I --> J[Phase 4: Deliverables & Presentation];
-    J --> K(7. Comprehensive Documentation & Reporting - Reflecting Multi-class Project & WQI decision);
-    K --> L(8. Video Showcase Prep - Highlighting Key Decisions & Results);
+    J --> K(Comprehensive Documentation & Reporting - Reflecting Multi-class Project & WQI decision);
+    K --> L(Video Showcase Prep - Highlighting Key Decisions & Results);
 
     subgraph "Iterative Nature"
         direction LR
