@@ -1,0 +1,35 @@
+graph TD
+    subgraph "Wan's Workflow (Prototyping & UI/UX)"
+        W_Input_HF1["Input: Feature list & understanding from Hendrix/Fernado (Ongoing W1)"]
+        W_Input_F1["Input: Finalized Model & Preprocessing Pipeline from Fernado (End of W2D9)"]
+
+        subgraph "Week 1: UI Planning & Initial Development"
+            W_W1_T1["Day 5-7: Research Streamlit/Flask & Plan UI Structure"]
+            W_W1_T2["Day 5-7: Develop Basic UI Layout Mockups/Wireframes"]
+
+            W_Input_HF1 --> W_W1_T1;
+            W_W1_T1 --> W_W1_T2;
+        end
+
+        subgraph "Week 2: Full Prototype Development & Finalization"
+            W_W2_T1["Day 8-9: Develop UI for Numerical & Categorical Inputs"]
+            W_W2_T2["Day 9: Implement Input Validation"]
+            W_W2_T3["Day 10: Integrate Finalized Model & Preprocessing Pipeline from Fernado"]
+            W_W2_T4["Day 10-11: Test Prototype Thoroughly & Refine UI/UX"]
+            W_W2_T5["Day 11 End: Functional Prototype Ready for Demonstration"]
+            W_W2_T6["Day 8-10: Document 'Prototype Design & Demonstration' Section for Report"]
+            W_W2_T7["Day 12: Record Prototype Demonstration for Video Showcase"]
+            W_W2_T8["Provide Finalized Section to Ryan for Report Compilation"]
+
+            W_W1_T2 --> W_W2_T1;
+            W_W2_T1 --> W_W2_T2;
+            W_Input_F1 --> W_W2_T3;
+            %% Validation done before integration
+            W_W2_T2 --> W_W2_T3;
+            W_W2_T3 --> W_W2_T4;
+            W_W2_T4 --> W_W2_T5;
+            W_W2_T4 --> W_W2_T6;
+            W_W2_T6 --> W_W2_T8;
+            W_W2_T5 --> W_W2_T7;
+        end
+    end
