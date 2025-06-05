@@ -12,11 +12,6 @@
 
 ---
 
-**Note on the Iterative Nature of ML Projects:**
-While this plan is presented in a linear fashion for clarity, it's important to remember that machine learning projects are often iterative. Insights gained in later phases (e.g., model evaluation) may necessitate revisiting earlier steps (e.g., data preprocessing, feature engineering). This iterative process is a normal and expected part of developing effective ML solutions.
-
----
-
 **Phase 1: Foundation & Data Acquisition**
 
 1.  **Project Setup & Environment Configuration:**
