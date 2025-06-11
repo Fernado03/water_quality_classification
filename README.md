@@ -2,14 +2,14 @@
 
 ## Table of Contents
 
-1.  [Project Overview](https://www.google.com/search?q=%23project-overview)
-2.  [Project Workflow](https://www.google.com/search?q=%23project-workflow)
-3.  [Dataset](https://www.google.com/search?q=%23dataset)
-4.  [Directory Structure](https://www.google.com/search?q=%23directory-structure)
-5.  [Installation & Setup](https://www.google.com/search?q=%23installation--setup)
-6.  [How to Run](https://www.google.com/search?q=%23how-to-run)
-7.  [Technology Stack](https://www.google.com/search?q=%23technology-stack)
-8.  [License](https://www.google.com/search?q=%23license)
+1.  [Project Overview](#project-overview)
+2.  [Project Workflow](#project-workflow)
+3.  [Dataset](#dataset)
+4.  [Directory Structure](#directory-structure)
+5.  [Installation & Setup](#installation--setup)
+6.  [How to Run](#how-to-run)
+7.  [Technology Stack](#technology-stack)
+8.  [License](#license)
 
 -----
 
