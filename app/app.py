@@ -23,6 +23,14 @@ FEATURES = [
     "EC", "Cl", "TDS", "Na"
 ]
 
+label_mapping = {
+    0: "Excellent",
+    1: "Good",
+    2: "Poor",
+    3: "Unsuitable for Drinking",
+    4: "Very Poor yet Drinkable"
+}
+
 # Sidebar for navigation
 st.sidebar.title("Navigation")
 main_option = st.sidebar.radio("Go to",
@@ -72,6 +80,7 @@ elif main_option == "Try the Model":
         ]
 
         selected_columns = ["EC", "Cl", "TDS", "Na", "WQI", "Water Quality Classification"]
+        
         data_test_self = pd.read_csv("data/raw/water_quality.csv", usecols=selected_columns)
         st.header("data from dataset for manual testing")
         st.write(data_test_self)
@@ -85,6 +94,9 @@ elif main_option == "Try the Model":
             scaled_input = scaler.transform(input_df)
             prediction = model.predict(scaled_input)[0]
             st.success(f"Predicted Water Quality Class: **{prediction}**")
+
+            predicted_label = label_mapping.get(prediction, "Unknown")
+            st.success(f"Predicted Water Quality Class: **{predicted_label}**")
 
     # ========== CSV Upload ==========
     elif sub_option == "Upload CSV":
