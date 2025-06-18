@@ -71,8 +71,28 @@ main_option = st.sidebar.radio("Go to", [
 # ========== Home ==========
 if main_option == "Home":
     st.title("Home")
-    st.title("Water Quality Classification")
-    st.markdown("Enter water sample features below to predict quality class.")
+    st.title("💧 Water Quality Classification App")
+
+    st.markdown("""
+    Welcome to the **Water Quality Predictor**!  
+    This app uses a machine learning model to classify water samples based on key features like:
+
+    - Electrical Conductivity (EC)
+    - Chloride (Cl)
+    - Sodium (Na)
+    - Total Dissolved Solids (TDS)
+
+    ---
+
+    ### 🔧 How to Use
+
+    1. Go to the **"Try the Model"** section from the sidebar.
+    2. Input the values for the 4 water quality features.
+    3. Click the **"Predict"** button.
+    4. The app will display the predicted class and label (e.g., **Safe** or **Unsafe** water).
+
+    Ready to begin? Head over to the model tab and try it out! 🚀
+    """)
 
 # ========== Model Development ==========
 elif main_option == "Model Development":
@@ -101,6 +121,7 @@ elif main_option == "Try the Model":
     if sub_option == "Manual Input":
         selected_columns = ["EC", "Cl", "TDS", "Na", "WQI", "Water Quality Classification"]
         data_test_self = pd.read_csv("data/raw/water_quality.csv", usecols=selected_columns)
+        data_test_self = data_test_self[selected_columns]
         st.header("Sample Data for Reference")
         st.write(data_test_self)
 
@@ -110,10 +131,23 @@ elif main_option == "Try the Model":
             input_df = pd.DataFrame([input_data])
             scaled_input = scaler.transform(input_df)
             prediction = model.predict(scaled_input)[0]
+            probs = model.predict_proba(scaled_input)[0]
+            confidence = np.max(probs) * 100
+            predicted_label = label_mapping.get(prediction, "Unknown")
 
             st.success(f"Predicted Class Number: **{prediction}**")
-            predicted_label = label_mapping.get(prediction, "Unknown")
             st.success(f"Predicted Label: **{predicted_label}**")
+            st.info(f"📈 Model Confidence: **{confidence:.2f}%**")
+
+            # --- Bar Chart of Probabilities ---
+            st.subheader("🔍 Class Probabilities")
+            class_names = model.classes_
+            prob_df = pd.DataFrame({
+                "Class": [label_mapping.get(i, str(i)) for i in class_names],
+                "Probability": probs
+            })
+
+            st.bar_chart(prob_df.set_index("Class"))
 
     elif sub_option == "Upload CSV":
         uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
