@@ -4,6 +4,13 @@ import pandas as pd
 import numpy as np
 import pickle
 
+from pathlib import Path
+import nbformat
+from nbconvert import HTMLExporter
+import streamlit.components.v1 as components
+
+st.set_page_config(page_title="Notebook Viewer", layout="wide")
+
 # Load trained model and scaler
 MODEL_PATH = 'models/final_gradient_boosting_model.pkl'
 SCALER_PATH = 'models/min_max_scaler.pkl'
@@ -31,6 +38,14 @@ label_mapping = {
     4: "Very Poor yet Drinkable"
 }
 
+# Helper function to render a local notebook
+def render_notebook_html(notebook_path):
+    with open(notebook_path, 'r', encoding='utf-8') as f:
+        nb = nbformat.read(f, as_version=4)
+    html_exporter = HTMLExporter()
+    body, _ = html_exporter.from_notebook_node(nb)
+    components.html(body, height=1000, scrolling=True)
+
 # Sidebar for navigation
 st.sidebar.title("Navigation")
 main_option = st.sidebar.radio("Go to",
@@ -47,7 +62,7 @@ if main_option == "Home":
     st.title("Water Quality Classification")
     st.markdown("Enter water sample features below to predict quality class.")
 
-
+# ========== Model Development ==========
 elif main_option == "Model Development":
     st.title("Model Development")
     st.subheader("Dataset")
@@ -55,18 +70,26 @@ elif main_option == "Model Development":
     data = pd.read_csv("data/raw/water_quality.csv")
     st.write(data)
 
+    st.title("Jupyter Notebooks")
 
+    tabs = st.tabs([
+        "📘 Phase 1: EDA & Feature Selection",
+        "📘 Phase 2: Model Training & Evaluation",
+        "📘 Phase 3: Hyperparameter Tuning"
+    ])
 
+    with tabs[0]:
+        render_notebook_html("notebooks/01_eda_and_feature_selection.ipynb")
 
+    with tabs[1]:
+        render_notebook_html("notebooks/02_model_training_and_evaluation.ipynb")
 
-
-
-    
+    with tabs[2]:
+        render_notebook_html("notebooks/03_hyperparameter_tuning.ipynb")
 
 elif main_option == "Try the Model":
     st.title("Try the Model")
 
-    # Sub-option selector only visible here
     sub_option = st.sidebar.selectbox(
         "Choose input method:",
         ["Manual Input", "Upload CSV"]
@@ -82,7 +105,8 @@ elif main_option == "Try the Model":
         selected_columns = ["EC", "Cl", "TDS", "Na", "WQI", "Water Quality Classification"]
         
         data_test_self = pd.read_csv("data/raw/water_quality.csv", usecols=selected_columns)
-        st.header("data from dataset for manual testing")
+        data_test_self = data_test_self[selected_columns] 
+        st.header("Data from training/testing dataset for manual testing")
         st.write(data_test_self)
 
         input_data = {}
@@ -113,13 +137,13 @@ elif main_option == "Try the Model":
             else:
                 st.error("Uploaded CSV must contain all required features.")
 
+
 elif main_option == "Model Visualizations":
     st.title("Model Visualizations")
 
     # Define relative path to the image
     from pathlib import Path
     from PIL import Image
-
     import os
     image_dir = Path(os.path.abspath(".")) / "notebooks" / "static_figures"
 
