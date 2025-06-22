@@ -2,182 +2,176 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
-
 from pathlib import Path
-from nbconvert import HTMLExporter
-import nbformat
-import streamlit.components.v1 as components
 from PIL import Image
-import os
+import os # Import the os module
 
-st.set_page_config(page_title="Notebook Viewer", layout="wide")
+# ======================================================================================
+# Page Configuration
+# ======================================================================================
+st.set_page_config(
+    page_title="Water Quality Predictor",
+    page_icon="💧",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# Paths to your notebooks
-NOTEBOOK_PATHS = {
-    "Phase 1: EDA & Feature Selection": "notebooks/01_eda_and_feature_selection.ipynb",
-    "Phase 2: Model Training & Evaluation": "notebooks/02_model_training_and_evaluation.ipynb",
-    "Phase 3: Hyperparameter Tuning": "notebooks/03_hyperparameter_tuning.ipynb"
-}
+# ======================================================================================
+# Load Model and Scaler
+# ======================================================================================
+# Use Path for robust, OS-agnostic paths
+# __file__ gives the path of the script being run (app.py)
+# .parent gives the directory containing it (the 'app' folder)
+# .parent again goes up one level to the project root
+base_dir = Path(__file__).resolve().parent.parent
 
-# Load trained model and scaler
-MODEL_PATH = 'models/final_gradient_boosting_model.pkl'
-SCALER_PATH = 'models/min_max_scaler.pkl'
+MODEL_PATH = base_dir / 'models' / 'final_model.pkl'
+SCALER_PATH = base_dir / 'models' / 'scaler.pkl'
+
+# --- DEBUGGING OUTPUT ---
+# This will print the paths to the Streamlit console/terminal
+st.sidebar.write("--- Debug Info ---")
+st.sidebar.write(f"Base Directory: `{base_dir}`")
+st.sidebar.write(f"Attempting to load model from: `{MODEL_PATH}`")
+st.sidebar.write(f"Model Exists: `{os.path.exists(MODEL_PATH)}`")
+st.sidebar.write(f"Attempting to load scaler from: `{SCALER_PATH}`")
+st.sidebar.write(f"Scaler Exists: `{os.path.exists(SCALER_PATH)}`")
+st.sidebar.write("--------------------")
+# --- END DEBUGGING ---
+
 
 @st.cache_resource
-def load_model():
-    with open(MODEL_PATH, 'rb') as f:
-        model = pickle.load(f)
-    with open(SCALER_PATH, 'rb') as f:
-        scaler = pickle.load(f)
-    return model, scaler
+def load_model_and_scaler():
+    """Load the trained model and scaler from disk."""
+    if not os.path.exists(MODEL_PATH) or not os.path.exists(SCALER_PATH):
+        return None, None
+    
+    try:
+        with open(MODEL_PATH, 'rb') as f_model:
+            model = pickle.load(f_model)
+        with open(SCALER_PATH, 'rb') as f_scaler:
+            scaler = pickle.load(f_scaler)
+        return model, scaler
+    except Exception as e:
+        st.error(f"An error occurred while loading files: {e}")
+        return None, None
 
-model, scaler = load_model()
 
+model, scaler = load_model_and_scaler()
+
+# ======================================================================================
+# Application Constants
+# ======================================================================================
 FEATURES = ["EC", "Cl", "TDS", "Na"]
-
-label_mapping = {
+LABEL_MAPPING = {
     0: "Excellent",
     1: "Good",
     2: "Poor",
     3: "Unsuitable for Drinking",
-    4: "Very Poor yet Drinkable"
+    4.0: "Very Poor yet Drinkable" # Corrected to float
+}
+RESULT_STYLES = {
+    "Excellent": {"color": "green", "advice": "This water is of the highest quality."},
+    "Good": {"color": "blue", "advice": "This water is safe and of good quality."},
+    "Poor": {"color": "orange", "advice": "Caution: This water is of poor quality and may not be safe for drinking."},
+    "Very Poor yet Drinkable": {"color": "red", "advice": "Warning: This water is of very poor quality. Treatment is highly recommended before consumption."},
+    "Unsuitable for Drinking": {"color": "darkred", "advice": "DANGER: This water is unsuitable for drinking and may pose significant health risks."}
 }
 
-# 🟢 Safe method using HTMLExporter instead of subprocess
-def render_notebook_html(notebook_path):
-    try:
-        with open(notebook_path, 'r', encoding='utf-8') as f:
-            notebook_node = nbformat.read(f, as_version=4)
-
-        html_exporter = HTMLExporter()
-        html_exporter.exclude_input = True  # Hide code cells
-        html_exporter.exclude_output_prompt = True
-        html_exporter.template_name = "lab"  # Can be 'classic' or 'lab'
-
-        body, _ = html_exporter.from_notebook_node(notebook_node)
-        components.html(body, height=1000, scrolling=True)
-    except Exception as e:
-        st.error(f"Failed to render notebook: {e}")
-
+# ======================================================================================
 # Sidebar Navigation
+# ======================================================================================
 st.sidebar.title("Navigation")
 main_option = st.sidebar.radio("Go to", [
-    "Home",
-    "Model Development",
-    "Try the Model",
-    "Model Visualizations"
+    "🏠 Home",
+    "🧪 Try the Model",
+    "📊 Model Development"
 ])
 
-# ========== Home ==========
-if main_option == "Home":
-    st.title("Home")
+# ======================================================================================
+# Main Application Content
+# ======================================================================================
+if model is None or scaler is None:
+    st.error("Model or scaler not found. Please check the paths in the debug info in the sidebar and ensure the files exist.")
+    st.stop()
+
+
+# ========== 1. Home Page ==========
+if main_option == "🏠 Home":
     st.title("💧 Water Quality Classification App")
-
+    st.markdown("---")
+    st.markdown("Welcome to the **Water Quality Predictor**! This application leverages a machine learning model to instantly classify water quality based on four key chemical parameters.")
+    st.header("🎯 Project Goal")
+    st.info("To provide a fast, accessible, and reliable tool for assessing water quality, overcoming the time and cost barriers of traditional laboratory testing.")
+    st.header("🔧 How It Works")
     st.markdown("""
-    Welcome to the **Water Quality Predictor**!  
-    This app uses a machine learning model to classify water samples based on key features like:
-
-    - Electrical Conductivity (EC)
-    - Chloride (Cl)
-    - Sodium (Na)
-    - Total Dissolved Solids (TDS)
-
-    ---
-
-    ### 🔧 How to Use
-
-    1. Go to the **"Try the Model"** section from the sidebar.
-    2. Input the values for the 4 water quality features.
-    3. Click the **"Predict"** button.
-    4. The app will display the predicted class and label (e.g., **Safe** or **Unsafe** water).
-
-    Ready to begin? Head over to the model tab and try it out! 🚀
+    The application uses a **Random Forest** model that has been trained on thousands of water samples.
+    1.  Go to the **"🧪 Try the Model"** page.
+    2.  Input values for the four required features.
+    3.  Click the **"Predict"** button to get an instant classification.
     """)
 
-# ========== Model Development ==========
-elif main_option == "Model Development":
-    st.title("Model Development")
-    st.subheader("Dataset")
-    st.write("`water_quality.csv`")
-    data = pd.read_csv("data/raw/water_quality.csv")
-    st.write(data)
+# ========== 2. Try the Model Page ==========
+elif main_option == "🧪 Try the Model":
+    st.title("🧪 Try the Water Quality Model")
+    st.markdown("Enter the chemical parameters of a water sample below to classify its quality.")
 
-    st.title("Jupyter Notebooks")
-    tab_titles = list(NOTEBOOK_PATHS.keys())
-    tabs = st.tabs([f"📘 {title}" for title in tab_titles])
+    with st.form("prediction_form"):
+        st.subheader("Input Water Quality Features")
+        col1, col2 = st.columns(2)
+        input_data = {}
+        with col1:
+            input_data["EC"] = st.number_input("Enter Electrical Conductivity (EC)", min_value=0.0, format="%.2f")
+            input_data["Cl"] = st.number_input("Enter Chloride (Cl)", min_value=0.0, format="%.2f")
+        with col2:
+            input_data["TDS"] = st.number_input("Enter Total Dissolved Solids (TDS)", min_value=0.0, format="%.2f")
+            input_data["Na"] = st.number_input("Enter Sodium (Na)", min_value=0.0, format="%.2f")
+        
+        submitted = st.form_submit_button("Predict Water Quality")
 
-    for i, title in enumerate(tab_titles):
-        with tabs[i]:
-            st.markdown(f"### {title}")
-            notebook_file = NOTEBOOK_PATHS[title]
-            render_notebook_html(notebook_file)
+    if submitted:
+        input_df = pd.DataFrame([input_data])
+        input_df_log = input_df.copy()
+        for col in FEATURES:
+            input_df_log[col] = np.log1p(input_df_log[col])
+        
+        scaled_input = scaler.transform(input_df_log)
+        prediction = model.predict(scaled_input)[0]
+        probs = model.predict_proba(scaled_input)[0]
+        confidence = np.max(probs) * 100
+        predicted_label = LABEL_MAPPING.get(prediction, "Unknown")
+        
+        st.subheader("Prediction Result")
+        style = RESULT_STYLES.get(predicted_label, {"color": "gray", "advice": "No specific advice available."})
+        st.markdown(f"The model predicts the water quality is: <strong style='color:{style['color']}; font-size: 24px;'>{predicted_label}</strong>", unsafe_allow_html=True)
+        st.info(f"**Advice:** {style['advice']}")
+        st.success(f"**Model Confidence:** {confidence:.2f}%")
 
-# ========== Try the Model ==========
-elif main_option == "Try the Model":
-    st.title("Try the Model")
+        st.subheader("Class Probabilities")
+        prob_df = pd.DataFrame({
+            "Class": [LABEL_MAPPING.get(i, str(i)) for i in model.classes_],
+            "Probability": probs
+        })
+        st.bar_chart(prob_df.set_index("Class"))
 
-    sub_option = st.sidebar.selectbox("Choose input method:", ["Manual Input", "Upload CSV"])
+# ========== 3. Model Development Page ==========
+elif main_option == "📊 Model Development":
+    st.title("📊 Model Development Workflow")
+    st.markdown("This section showcases the key visualizations generated during the development and evaluation of the model.")
 
-    if sub_option == "Manual Input":
-        selected_columns = ["EC", "Cl", "TDS", "Na", "WQI", "Water Quality Classification"]
-        data_test_self = pd.read_csv("data/raw/water_quality.csv", usecols=selected_columns)
-        data_test_self = data_test_self[selected_columns]
-        st.header("Sample Data for Reference")
-        st.write(data_test_self)
-
-        input_data = {feature: st.number_input(f"{feature}:", format="%.4f") for feature in FEATURES}
-
-        if st.button("Predict"):
-            input_df = pd.DataFrame([input_data])
-            scaled_input = scaler.transform(input_df)
-            prediction = model.predict(scaled_input)[0]
-            probs = model.predict_proba(scaled_input)[0]
-            confidence = np.max(probs) * 100
-            predicted_label = label_mapping.get(prediction, "Unknown")
-
-            st.success(f"Predicted Class Number: **{prediction}**")
-            st.success(f"Predicted Label: **{predicted_label}**")
-            st.info(f"📈 Model Confidence: **{confidence:.2f}%**")
-
-            # --- Bar Chart of Probabilities ---
-            st.subheader("🔍 Class Probabilities")
-            class_names = model.classes_
-            prob_df = pd.DataFrame({
-                "Class": [label_mapping.get(i, str(i)) for i in class_names],
-                "Probability": probs
-            })
-
-            st.bar_chart(prob_df.set_index("Class"))
-
-    elif sub_option == "Upload CSV":
-        uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
-        if uploaded_file:
-            df_uploaded = pd.read_csv(uploaded_file)
-            if all(feature in df_uploaded.columns for feature in FEATURES):
-                scaled = scaler.transform(df_uploaded[FEATURES])
-                predictions = model.predict(scaled)
-                df_uploaded['Prediction'] = predictions
-                st.dataframe(df_uploaded)
-
-                csv = df_uploaded.to_csv(index=False).encode('utf-8')
-                st.download_button("Download Predictions", csv, "predictions.csv", "text/csv")
-            else:
-                st.error("Uploaded CSV must contain all required features.")
-
-# ========== Model Visualizations ==========
-elif main_option == "Model Visualizations":
-    st.title("Model Visualizations")
-
-    image_dir = Path(os.path.abspath(".")) / "notebooks" / "static_figures"
-    image_files = sorted([f for f in image_dir.glob("*.png")])
-
-    if not image_files:
-        st.error("No images found in the directory.")
+    figures_dir = base_dir / 'reports' / 'figures'
+    
+    if not figures_dir.is_dir():
+        st.error(f"Figures directory not found at '{figures_dir}'. Please ensure the project structure is correct.")
     else:
-        image_index = st.slider("Use arrow to browse images:", min_value=0, max_value=len(image_files) - 1, format="Image %d")
-        image = Image.open(image_files[image_index])
-        st.image(image, caption=image_files[image_index].name, use_container_width=True)
+        st.subheader("Target Variable Distribution")
+        st.image(str(figures_dir / "target_variable_distribution.png"), caption="Distribution of classes in the dataset, highlighting the class imbalance.", use_container_width=True)
+        st.subheader("Feature Distributions (Top 8)")
+        st.image(str(figures_dir / "top_features_distribution.png"), caption="Distributions of the top 8 features, showing significant right-skewness before transformation.", use_container_width=True)
+        st.subheader("Model Performance Comparison")
+        st.image(str(figures_dir / "confusion_matrix_Tuned_Random_Forest.png"), caption="Confusion matrix for the final, tuned Random Forest model.", use_container_width=True)
+        st.image(str(figures_dir / "feature_importance_Random_Forest.png"), caption="Feature importance plot for the final model.", use_container_width=True)
 
 # ========== Footer ==========
 st.markdown("---")
-st.markdown("This model uses Gradient Boosting for classification based on chemical and physical water parameters.")
+st.markdown("This application uses a fine-tuned **Random Forest Classifier** to predict water quality.")

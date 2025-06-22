@@ -1,92 +1,31 @@
 # AI for Water Quality Classification
 
-## Table of Contents
+## Project Overview
 
-1.  [Project Overview](#project-overview)
-2.  [Project Workflow](#project-workflow)
-3.  [Dataset](#dataset)
-4.  [Directory Structure](#directory-structure)
-5.  [Installation & Setup](#installation--setup)
-6.  [How to Run](#how-to-run)
-7.  [Technology Stack](#technology-stack)
-8.  [License](#license)
+This project implements a machine learning solution to automate water quality classification. The final product is a user-friendly web application built with Streamlit that classifies water quality based on four key chemical parameters: `EC`, `Cl`, `TDS`, and `Na`.
+
+The model predicts water quality into one of five categories: `Excellent`, `Good`, `Poor`, `Very Poor yet Drinkable`, and `Unsuitable for Drinking`.
 
 -----
 
-## Project Overview
+## Final Model & Performance
 
-This project addresses the critical need for rapid and accessible water quality assessment. Traditional methods of testing water quality are often time-consuming, expensive, and require specialized laboratory equipment. This high barrier can delay necessary interventions, posing significant health risks and contributing to environmental damage.
+After a comprehensive analysis involving data cleaning, preprocessing, and the evaluation of multiple baseline models, the **Random Forest Classifier** was selected as the final model.
 
-To overcome these challenges, this project implements a machine learning solution to automate water quality classification. The model predicts the quality of water into one of five categories based on key chemical properties:
+  - **Hyperparameter Tuning**: The model was fine-tuned using `RandomizedSearchCV` to optimize for the Macro F1-score, ensuring robust performance across imbalanced classes.
+  - **Final Accuracy**: The optimized model achieved a final accuracy of **97.08%** on the held-out test set.
 
-  * Excellent
-  * Good
-  * Poor
-  * Very Poor
-  * Unsuitable for Drinking
+-----
 
-The final product is a simple web application where a user can input four chemical parameter values and receive an instant classification of the water's quality, making this a practical tool for environmental monitoring.
+## How to Run the Application
 
-## Project Workflow
-
-The project was executed in several phases, from data acquisition to model deployment in a prototype application.
-
-1.  **Foundation & Data Acquisition**: The project environment was set up, and the dataset was acquired. Initial Exploratory Data Analysis (EDA) was performed to understand data distributions and identify key variables.
-2.  **Data Preparation & Modeling**:
-      * **Feature Selection**: Based on a correlation analysis with the Water Quality Index (WQI), four key features were selected: **Electrical Conductivity (EC)**, **Chloride (Cl)**, **Total Dissolved Solids (TDS)**, and **Sodium (Na)**.
-      * **Preprocessing**: The selected features were scaled using Min-Max scaling, and the categorical target variable was encoded.
-      * **Model Training**: The data was split using an 80/20 stratified split to handle class imbalance. Several classification models (e.g., Logistic Regression, Random Forest, Gradient Boosting, kNN) were trained and evaluated.
-3.  **Optimization & Prototyping**: The best-performing model was optimized using `RandomizedSearchCV` with cross-validation to find the best hyperparameters. A user-friendly prototype was developed using Streamlit.
-4.  **Deliverables**: The project is summarized in this repository, including the final model, source code, and reports.
-
-## Dataset
-
-The primary dataset used for this project is publicly available from a [GitHub Repository](https://github.com/shahsanjanav/DL-WaterQuality-Classifier).
-
-  * **Original Dimensions**: 19,029 rows × 24 features.
-  * **Final Features Used for Modeling**: `Electrical Conductivity (EC)`, `Chloride (Cl)`, `Total Dissolved Solids (TDS)`, `Sodium (Na)`.
-  * **Target Variable**: `Water Quality Classification`.
-
-## Directory Structure
-
-The project is organized into a clear and modular structure:
-
-```
-water_quality_classifier/
-│
-├── .venv/
-├── data/
-│   ├── raw/
-│   └── processed/
-├── notebooks/
-│   ├── 01_eda_and_feature_selection.ipynb
-│   ├── 02_model_training_and_evaluation.ipynb
-│   └── 03_hyperparameter_tuning.ipynb
-├── src/
-│   ├── data_preprocessing.py
-│   └── model_training.py
-├── app/
-│   └── app.py
-├── models/
-│   ├── final_model.pkl
-│   └── scaler.pkl
-├── reports/
-│   ├── figures/
-│   └── final_report.md
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
-
-## Installation & Setup
-
-To set up this project on your local machine, please follow the steps below.
+The final product is a web application. To run it on your local machine, follow these steps.
 
 **1. Clone the Repository**
 
 ```bash
 git clone <your-repository-url>
-cd water_quality_classifier
+cd <your-repository-folder>
 ```
 
 **2. Create and Activate a Virtual Environment**
@@ -103,46 +42,74 @@ cd water_quality_classifier
     ```
 
 **3. Install Required Libraries**
-Once the virtual environment is activated, install all the necessary packages from the `requirements.txt` file.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## How to Run
+**4. Run the Streamlit App**
 
-There are two main ways to interact with this project: running the analysis notebooks or launching the final application.
+Once the setup is complete, launch the application with the following command:
 
-**1. Running the Jupyter Notebooks**
+```bash
+streamlit run app.py
+```
 
-The notebooks in the `notebooks/` directory detail the project's analytical process. To explore them, start Jupyter Lab:
+This will open the application in your web browser.
+
+-----
+
+## Project Workflow & Development
+
+The project was executed in three main phases, detailed in the Jupyter notebooks located in the `notebooks/` directory:
+
+1.  **Phase 1: EDA & Data Cleaning**: Initial data inspection, visualization, and cleaning.
+2.  **Phase 2: Model Training & Evaluation**: Training baseline models and selecting the best performer.
+3.  **Phase 3: Hyperparameter Tuning & Finalization**: Optimizing the selected model and saving the final artifacts.
+
+You can explore these notebooks using Jupyter Lab:
 
 ```bash
 jupyter lab
 ```
 
-Then, open and run the notebooks in numerical order (`01`, `02`, `03`) to follow the workflow from EDA to model tuning.
+## Directory Structure
 
-**2. Launching the Streamlit Application**
-
-The final prototype is a web application built with Streamlit. To run it, execute the following command in your terminal from the project's root directory:
-
-```bash
-streamlit run app/app.py
 ```
-
-This will launch a local web server, and you can access the application in your browser. The UI will prompt you to enter values for the four key features to get a water quality prediction.
+water_quality_classifier/
+│
+├── app/
+│   └── app.py              # The Streamlit web application
+├── data/
+│   ├── raw/
+│   │   └── water_quality.csv
+│   └── processed/
+│       └── water_quality_cleaned.csv
+├── models/
+│   ├── final_model.pkl     # The tuned Random Forest model
+│   └── scaler.pkl          # The MinMaxScaler object
+├── notebooks/
+│   ├── 01_eda_and_data_cleaning.ipynb
+│   ├── 02_model_training_and_evaluation.ipynb
+│   └── 03_hyperparameter_tuning_and_finalization.ipynb
+├── reports/
+│   └── figures/            # Saved plots and figures
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
 
 ## Technology Stack
 
-  * **Data Analysis & Manipulation**: `pandas`, `numpy`
+  * **Data Analysis**: `pandas`, `numpy`
   * **Machine Learning**: `scikit-learn`
   * **Data Visualization**: `matplotlib`, `seaborn`
-  * **Web Application Framework**: `streamlit`
+  * **Web Application**: `streamlit`
+  * **Image Processing**: `Pillow`
   * **Environment Management**: `venv`
 
 -----
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+This project is licensed under the MIT License.

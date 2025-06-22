@@ -1,3 +1,37 @@
-Dockerfile
+Python bytecode
+pycache/
+*.pyc
+*.pyo
+*.pyd
+
+Virtual Environments
+.venv/
 venv/
-.roo/
+ENV/
+env/
+
+IDE and Editor-specific files
+.vscode/
+.idea/
+*.suo
+.ntvs
+*.njsproj
+*.sln
+*.sw?
+
+Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+Operating System files
+.DS_Store
+Thumbs.db
+
+Reports - Optional, if you generate many large reports you might ignore them
+reports/
+Log files
+*.log
+
+Local package installations
+/dist/
+/build/
+*.egg-info/
