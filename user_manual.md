@@ -31,16 +31,26 @@ First, you need to download the project files from the repository onto your comp
 
 ### Step 2.2: Set Up the Virtual Environment
 
+⚠️ Important: This project is compatible only with Python 3.11.
+Make sure you have Python 3.11 installed before continuing.
+Check your version by running:
+
+```bash
+python --version
+```
+If it's not Python 3.11, download it from the official site:
+👉 https://www.python.org/downloads/release/python-3110/
+
 A virtual environment is a private, isolated space for the project's libraries. This prevents conflicts with other Python projects on your system.
 
   * **For macOS/Linux users:**
     ```bash
-    python3 -m venv .venv
+    python3.11 -m venv .venv
     source .venv/bin/activate
     ```
   * **For Windows users:**
     ```bash
-    python -m venv .venv
+    py -3.11 -m venv .venv
     .\.venv\Scripts\activate
     ```
 
@@ -66,7 +76,7 @@ With the setup complete, you can now launch the interactive web application.
 2.  Ensure your virtual environment is active (you see `(.venv)` in the prompt).
 3.  Run the following command:
     ```bash
-    streamlit run app.py
+    streamlit run app/app.py
     ```
 
 This command starts a local web server, and your default web browser should automatically open a new tab with the application running.
