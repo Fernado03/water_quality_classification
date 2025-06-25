@@ -45,12 +45,12 @@ A virtual environment is a private, isolated space for the project's libraries. 
 
   * **For macOS/Linux users:**
     ```bash
-    python3 -m venv .venv
+    python3.11 -m venv .venv
     source .venv/bin/activate
     ```
   * **For Windows users:**
     ```bash
-    python -m venv .venv
+    py -3.11 -m venv .venv
     .\.venv\Scripts\activate
     ```
 
