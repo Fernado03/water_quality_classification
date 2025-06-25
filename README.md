@@ -78,8 +78,8 @@ jupyter lab
 ```
 water_quality_classifier/
 │
-├── app/
-│   └── app.py              # The Streamlit web application
+├── app.py
+│   
 ├── data/
 │   ├── raw/
 │   │   └── water_quality.csv

@@ -20,10 +20,13 @@ st.set_page_config(
 # ======================================================================================
 # Load Model and Scaler
 # ======================================================================================
-base_dir = Path(__file__).resolve().parent.parent
+# --- CHANGE #1: Correct the base directory calculation ---
+base_dir = Path(__file__).resolve().parent
 MODEL_PATH = base_dir / 'models' / 'final_model.pkl'
 SCALER_PATH = base_dir / 'models' / 'scaler.pkl'
-HISTORY_PATH = base_dir / 'app' / 'appdata' / 'user_prediction_history.csv'
+# --- CHANGE #2: Correct the history path ---
+HISTORY_PATH = base_dir / 'appdata' / 'user_prediction_history.csv'
+
 
 # ======================================================================================
 # Ensure history directory exists
