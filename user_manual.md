@@ -76,7 +76,7 @@ With the setup complete, you can now launch the interactive web application.
 2.  Ensure your virtual environment is active (you see `(.venv)` in the prompt).
 3.  Run the following command:
     ```bash
-    streamlit run app.py
+    streamlit run app/app.py
     ```
 
 This command starts a local web server, and your default web browser should automatically open a new tab with the application running.
