@@ -59,16 +59,17 @@ The final, tuned Random Forest model demonstrated excellent and well-balanced pe
 
 The classification report below shows high precision and recall for all five classes, confirming the model's reliability.
 
-                         precision    recall  f1-score   support
-
-              Excellent       0.99      0.96      0.97       149
-                   Good       0.95      0.93      0.94       307
-                   Poor       0.96      0.97      0.97      1056
-Unsuitable for Drinking       0.99      0.99      0.99      1320
-Very Poor yet Drinkable       0.96      0.96      0.96       940           
-               accuracy                           0.97      3772
-              macro avg       0.97      0.96      0.97      3772
-           weighted avg       0.97      0.97      0.97      3772
+| Class | precision | recall | f1-score | support |
+| :--- | :--- | :--- | :--- | :--- |
+| Excellent | 0.99 | 0.96 | 0.97 | 149 |
+| Good | 0.95 | 0.93 | 0.94 | 307 |
+| Poor | 0.96 | 0.97 | 0.97 | 1056 |
+| Unsuitable for Drinking | 0.99 | 0.99 | 0.99 | 1320 |
+| Very Poor yet Drinkable | 0.96 | 0.96 | 0.96 | 940 |
+| | | | | |
+| **accuracy** | | | **0.97** | **3772** |
+| **macro avg** | **0.97** | **0.96** | **0.97** | **3772** |
+| **weighted avg** | **0.97** | **0.97** | **0.97** | **3772** |
 
 ### 3.2. Feature Importance
 
