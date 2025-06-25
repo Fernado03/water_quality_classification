@@ -31,6 +31,16 @@ First, you need to download the project files from the repository onto your comp
 
 ### Step 2.2: Set Up the Virtual Environment
 
+⚠️ Important: This project is compatible only with Python 3.11.
+Make sure you have Python 3.11 installed before continuing.
+Check your version by running:
+
+```bash
+python --version
+```
+If it's not Python 3.11, download it from the official site:
+👉 https://www.python.org/downloads/release/python-3110/
+
 A virtual environment is a private, isolated space for the project's libraries. This prevents conflicts with other Python projects on your system.
 
   * **For macOS/Linux users:**
