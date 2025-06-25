@@ -79,7 +79,56 @@ The analysis of the final model confirmed that **Electrical Conductivity (EC)** 
 
 ## 4. Deployment
 
-The final, serialized model (`final_model.pkl`) and the data scaler (`scaler.pkl`) were integrated into an interactive web application using the **Streamlit** framework. The application (`app.py`) provides a user-friendly interface where users can input the four required chemical parameters and receive an instant water quality classification, along with the model's confidence score.
+The deployment phase involved integrating the trained machine learning model and the associated data preprocessing steps into an interactive and user-friendly web application using the **Streamlit** framework.
+
+The final **Random Forest Classifier** was serialized into `final_model.pkl`, and the corresponding **MinMaxScaler** used for feature normalization was saved as `scaler.pkl`. These files are loaded at runtime within the `app.py` script, which forms the backbone of the web interface.
+
+### Key Application Features
+
+- **Input Interface**:  
+  Users can input four essential chemical parameters:
+  - **EC** (Electrical Conductivity)
+  - **Cl** (Chloride)
+  - **TDS** (Total Dissolved Solids)
+  - **Na** (Sodium)
+
+- **Preprocessing and Prediction**:  
+  Upon form submission:
+  - Inputs are log-transformed using `log1p` to correct for skewness.
+  - Features are scaled with the loaded `MinMaxScaler`.
+  - The preprocessed data is passed to the trained model.
+  - The model returns a predicted class (e.g., "Excellent", "Good", "Poor", etc.) along with a **confidence score**, displayed with color-coded styling and health advisories.
+
+- **User Navigation**:
+  - 🏠 **Home** – Introduction to the app's purpose and background.
+  - 🧪 **Try the Model** – Main interface for submitting input and viewing predictions.
+  - 📊 **Model Development** – Visual summaries of training results (e.g., class distributions, feature importance).
+  - 📜 **Prediction History** – Logs past user predictions with timestamps, inputs, predicted class, and confidence.
+
+- **Persistent Logging**:  
+  Each user prediction is recorded in `user_prediction_history.csv` for future reference. The app also allows users to view or clear this history.
+
+### Local Setup Instructions
+
+To run the app locally, follow these steps:
+
+```bash
+# Step 1: Create and activate virtual environment
+# For macOS/Linux:
+python3.11 -m venv .venv
+source .venv/bin/activate
+
+# For Windows:
+py -3.11 -m venv .venv
+.\.venv\Scripts\activate
+
+# Step 2: Install dependencies
+pip install -r requirements.txt
+
+# Step 3: Launch the app
+streamlit run app/app.py
+
+
 
 ## 5. Conclusion
 
